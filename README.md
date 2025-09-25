@@ -27,7 +27,7 @@ Setup
 
 1. Clone the repo:
    bash
-   git clone https://github.com/rental.turbotenant.com/landlord-onboard-rental-signup.git
+   git clone https://rental.turbotenant.com/landlord-onboard-rental-signup.git
    ```
 
 2. Install dependencies (if applicable)
