@@ -27,7 +27,8 @@ Setup
 
 1. Clone the repo:
    bash
-   git clone https://rental.turbotenant.com/landlord-onboard-rental-signup.git
+   git clone [https://rental.turbotenant.com/landlord-onboard-rental-signup.git](https://rental.turbotenant.com/auth/signup?first_name=John&last_name=Doe&email=john.doe@example.com&phone=+12105551234&company=Vivia+Turbo&property_address=1118+Sandalwood,+Desoto,+TX&unit=2B&referral_source=slack&utm_source=slack&utm_medium=onboarding&utm_campaign=landlord-signup
+)
    ```
 
 2. Install dependencies (if applicable)
