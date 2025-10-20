@@ -11,3 +11,9 @@ updates:
     ignore:
       - dependency-name: "*"       # Optional: ignore specific packages
         versions: ["<2.0.0"]      # Example: ignore all versions less than 2.0.0
+Added Dependabot configuration under .github for the TurboTenant rental repository.
+
+- Configures weekly npm dependency checks.
+- Limits open pull requests to 5.
+- Ignores dependency versions below 2.0.0.
+- Improves automated maintenance and dependency security visibility.
