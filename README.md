@@ -1,48 +1,80 @@
-# landlord-onboard-rental-signup
-Streamlined landlord onboarding and property listing automation using TurboTenant, Slack, and CRM integrations.*
+# 🏠 Landlord Onboarding & Rental Signup  
+**Branch:** `landlord-onboard-rental-signup`  
+**Repository:** `rental.turbotenant.com`  
 
-Overview
+This branch introduces the landlord onboarding workflow and rental signup system for VivaTurbo Rentals & Property Services, designed to make listing, verifying, and managing rental properties seamless.
 
-This project automates the onboarding process for landlords, simplifies property listing, and integrates with platforms such as:
+---
 
-- *TurboTenant* (listing + tenant screening)
-- *Slack* (workflow triggers + notifications)
-- *CRM tools* (lead management and syndication)
+## 🚀 Overview
 
-Features
+The **Landlord Onboard & Rental Signup** feature enables property owners to:
+- Create and verify their landlord accounts.  
+- Add rental property details (address, rent, deposit, amenities, etc.).  
+- Upload documents (ID, lease agreements, proof of ownership).  
+- Sign and submit rental agreements digitally.  
+- Manage tenants and applications through a single dashboard.
 
-- Landlord signup form with URL parameter pre-fill
-- Automated Slack workflows for onboarding steps
-- CRM integration for tracking and managing leads
-- Syndication support for Zillow, Zumper, Rent.com, and more
+---
 
-Tech Stack
+## 🧭 Workflow
 
-- *Frontend*: Fillout / Typeform / Web App
-- *Automation*: Slack Workflows + Webhooks
-- *Backend/CRM*: HubSpot / Google Sheets / Zapier
-- *Syndication*: TurboTenant, Zillow, etc.
+### 1. **Account Setup**
+- Go to [https://rental.turbotenant.com/home](https://rental.turbotenant.com/home)  
+- Select **Landlord Signup** and provide your details:
+  - Full Name  
+  - Business Email  
+  - Property Address  
+  - Bank Deposit Info (for rent payouts)
 
-Setup
+### 2. **Property Listing**
+- Enter property information:
+  - Street Address, Unit, City, State, ZIP  
+  - Rent amount and Security Deposit  
+  - Upload property images  
+- Preview your listing before publishing.
 
-1. Clone the repo:
-   bash
-   git clone [https://rental.turbotenant.com/landlord-onboard-rental-signup.git](https://rental.turbotenant.com/auth/signup?first_name=John&last_name=Doe&email=john.doe@example.com&phone=+12105551234&company=Vivia+Turbo&property_address=1118+Sandalwood,+Desoto,+TX&unit=2B&referral_source=slack&utm_source=slack&utm_medium=onboarding&utm_campaign=landlord-signup
-)
-   ```
+### 3. **Verification & Activation**
+- VivaTurbo team verifies ownership within 24–48 hours.  
+- Once approved, your listing goes live across partnered rental platforms.
 
-2. Install dependencies (if applicable)
+### 4. **Tenant Management**
+- View applications, approve tenants, and generate electronic leases.  
+- Accept rent payments and deposits directly from your dashboard.  
+- Assign property manager (e.g. David Wright) for communication and maintenance.
 
-3. Configure environment variables:
-   - API keys
-   - Webhook URLs
-   - CRM credentials
+---
 
-4. Run or deploy the app/workflows
+## 🧩 API Integration
 
-Contribution
-Feel free to open issues or pull requests. For major changes, please open a discussion first.
+For developers connecting through **Connectlinx** or **HubSpot CRM**, use the following fields:
 
-License
+| Field Name | Description | Example |
+|-------------|--------------|----------|
+| `landlord_id` | Unique landlord identifier | `LND-10284` |
+| `property_id` | Associated property record | `PRT-22170` |
+| `onboarding_status` | Verification state | `pending`, `verified`, `rejected` |
+| `created_by` | Account email | `john@turbotenant.com` |
 
-MIT License
+---
+
+## 📧 Support
+
+For onboarding or verification assistance, contact:  
+**Email:** [support@147061670.eu1.r.hubspot-inbox.com](mailto:support@147061670.eu1.r.hubspot-inbox.com)  
+**Website:** [https://rental.turbotenant.com](https://rental.turbotenant.com)
+
+---
+
+## 📜 Commit Info
+
+**Commit Message:**  
+`Update README.md for landlord onboarding and rental signup`
+
+**Branch:**  
+`landlord-onboard-rental-signup`
+
+---
+
+© 2025 VivaTurbo Rentals and Property Services.  
+All rights reserved.

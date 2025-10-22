@@ -1,0 +1,19 @@
+# Dependabot configuration for TurboTenant rental repository
+# Learn more: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  - package-ecosystem: "npm"       # Change this to your package manager (e.g., npm, pip, composer)
+    directory: "/"                 # Location of package manifests (root in this case)
+    schedule:
+      interval: "weekly"           # Update frequency: "daily", "weekly", or "monthly"
+    open-pull-requests-limit: 5   # Optional: limit concurrent PRs
+    ignore:
+      - dependency-name: "*"       # Optional: ignore specific packages
+        versions: ["<2.0.0"]      # Example: ignore all versions less than 2.0.0
+Added Dependabot configuration under .github for the TurboTenant rental repository.
+
+- Configures weekly npm dependency checks.
+- Limits open pull requests to 5.
+- Ignores dependency versions below 2.0.0.
+- Improves automated maintenance and dependency security visibility.
