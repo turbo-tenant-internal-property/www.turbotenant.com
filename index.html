@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Landlord onboarding form for TurboTenant — syncs automatically with Stripe and HubSpot." />
+  <meta name="author" content="VivaTurbo Rentals and Property Services" />
+
+  <title>Landlord Onboarding | TurboTenant</title>
+
+  <!-- Tracking -->
+  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-NDVJNCT8-MZE1M"></script>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+
+  <style>
+    body { background-color: #f9fafb; font-family: 'Inter', sans-serif; }
+    .form-card { background: #fff; border-radius: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.05); padding: 2rem; }
+    .section-title { font-weight: 600; font-size: 1.25rem; color: #374151; margin-bottom: 1rem; }
+    .label { display: block; font-weight: 500; color: #374151; margin-bottom: 0.25rem; }
+    .input, .select {
+      width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #d1d5db;
+      margin-bottom: 1rem; background-color: #fff;
+    }
+    .submit-btn {
+      background-color: #2563eb; color: #fff; font-weight: 600; border-radius: 0.5rem;
+      padding: 0.75rem 1.5rem; width: 100%;
+    }
+    .submit-btn:hover { background-color: #1e40af; }
+  </style>
+</head>
+
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NDVJNCT8-MZE1M"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <div class="min-h-screen flex flex-col justify-center items-center py-10 px-4">
+    <div class="form-card max-w-2xl w-full">
+      <h1 class="text-2xl font-bold text-center text-gray-800 mb-6">Let’s Personalize Your Experience</h1>
+
+      <form id="onboardForm">
+
+        <!-- SECTION 1: USER ROLE -->
+        <div class="mb-8">
+          <h2 class="section-title">User Type</h2>
+          <label class="label">I am a:</label>
+          <select name="user_role" class="select" required>
+            <option value="">Select one</option>
+            <option value="landlord">Landlord</option>
+            <option value="renter">Renter</option>
+          </select>
+
+          <label class="label">Landlord Type</label>
+          <select name="landlord_type" class="select">
+            <option value="self_managed">Self-managed</option>
+            <option value="for_others">Managing for others</option>
+            <option value="mixed">Both</option>
+            <option value="not_yet">Not yet</option>
+            <option value="broker">Broker</option>
+          </select>
+        </div>
+
+        <!-- SECTION 2: PROPERTY MANAGEMENT -->
+        <div class="mb-8">
+          <h2 class="section-title">Property Management Details</h2>
+
+          <label class="label">Number of Units</label>
+          <input type="number" name="unit_count" class="input" min="1" placeholder="e.g., 5" required />
+
+          <label class="label">Management Experience</label>
+          <select name="management_experience" class="select">
+            <option value="less_than_1">Less than 1 year</option>
+            <option value="1_to_4">1–4 years</option>
+            <option value="5_to_10">5–10 years</option>
+            <option value="10_plus">10+ years</option>
+            <option value="not_yet">Not yet managing</option>
+          </select>
+        </div>
+
+        <!-- SECTION 3: MARKETING -->
+        <div class="mb-8">
+          <h2 class="section-title">How did you hear about us?</h2>
+
+          <label class="label">Referral Source</label>
+          <select name="referral_source" class="select">
+            <option value="Facebook">Facebook</option>
+            <option value="Google">Google</option>
+            <option value="Zillow">Zillow</option>
+            <option value="Friend">Friend</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <!-- Auto fields from UTM -->
+          <input type="hidden" name="utm_source" value="hubspot" />
+          <input type="hidden" name="utm_medium" value="email" />
+          <input type="hidden" name="utm_campaign" value="landlord_onboarding" />
+        </div>
+
+        <!-- SECTION 4: ACCOUNT CREATION -->
+        <div class="mb-8">
+          <h2 class="section-title">Create Your Account</h2>
+
+          <input type="text" name="first_name" class="input" placeholder="First Name" required />
+          <input type="text" name="last_name" class="input" placeholder="Last Name" required />
+          <input type="email" name="email" class="input" placeholder="Email Address" required />
+          <input type="tel" name="phone" class="input" placeholder="Phone (optional)" />
+          <input type="password" name="password" class="input" placeholder="Password" required />
+
+          <label class="inline-flex items-center">
+            <input type="checkbox" name="terms_accepted" class="mr-2" required>
+            <span>I agree to the <a href="/terms" class="text-blue-600 underline">Terms of Service</a></span>
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn">Continue to Dashboard</button>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('onboardForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = Object.fromEntries(new FormData(form));
+
+      // Hash password before sending
+      const msgUint8 = new TextEncoder().encode(data.password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      data.auth_hash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      delete data.password;
+
+      data.signup_method = 'email';
+      data.support_email = "support@147061670.eu1.r.hubspot-inbox.com";
+      data.domain = "turbotenant.com";
+      data.subdomain = "rental.turbotenant.com";
+      data.hubspot_lead_id = "147061670";
+      data.stripe_acct_id = "acct_1SGBQr5X3GiReRgQ";
+      data.gtm_id = "GTM-NDVJNCT8-MZE1M";
+
+      // Send to TurboTenant API (mock endpoint)
+      fetch('/api/stripe/onboard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        window.location.href = "/dashboard/?view=owner_dashboard";
+      })
+      .catch(err => alert('Error completing signup.'));
+    });
+  </script>
+</body>
+</html>
