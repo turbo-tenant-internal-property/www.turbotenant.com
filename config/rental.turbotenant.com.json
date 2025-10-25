@@ -1,0 +1,25 @@
+{
+  "domain": "turbotenant.com",
+  "subdomain": "rental.turbotenant.com",
+  "support_email": "support@147061670.eu1.r.hubspot-inbox.com",
+  "hubspot_portal_id": "147061670",
+  "stripe_account_id": "acct_1SGBQr5X3GiReRgQ",
+  "gtm_id": "GTM-NDVJNCT8-MZE1M",
+  "dns_template": {
+    "cname_subdomain": {
+      "host": "rental",
+      "type": "CNAME",
+      "value": "<hosting-provider-target>",
+      "ttl": 3600
+    },
+    "mx": [
+      {
+        "host": "@",
+        "type": "MX",
+        "value": "<provider-mx-1>",
+        "priority": 10
+      }
+    ],
+    "spf_example": "v=spf1 include:spf.protection.outlook.com include:servers.mcsv.net -all"
+  }
+}
