@@ -9,7 +9,50 @@
   <title>Landlord Onboarding | TurboTenant</title>
 
   <!-- Tracking -->
-  <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-NDVJNCT8-MZE1M"></script>
+  <script>
+    // Configuration for analytics & tracking (editable)
+    window.__TT_ONBOARDING = {
+      gtmId: 'GTM-NDVJNCT8-MZE1M',
+      hubspotPortalId: '147061670',
+      gaMeasurementId: '' // e.g. G-XXXXXXX (leave blank if not used)
+    };
+
+    // Conditionally load analytics only on the rental subdomain
+    (function loadTracking() {
+      try {
+        var cfg = window.__TT_ONBOARDING || {};
+        var host = window.location.hostname || '';
+        if (!host.includes('rental.turbotenant.com')) return;
+
+        // Load Google Tag Manager
+        if (cfg.gtmId) {
+          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer',cfg.gtmId);
+        }
+
+        // Load HubSpot tracking
+        if (cfg.hubspotPortalId) {
+          var hs = document.createElement('script');
+          hs.type = 'text/javascript'; hs.async = true;
+          hs.src = 'https://js.hs-scripts.com/' + cfg.hubspotPortalId + '.js';
+          document.head.appendChild(hs);
+        }
+
+        // Load GA4 if provided
+        if (cfg.gaMeasurementId) {
+          var s = document.createElement('script');
+          s.async = true; s.src = 'https://www.googletagmanager.com/gtag/js?id=' + cfg.gaMeasurementId;
+          document.head.appendChild(s);
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);} gtag('js', new Date());
+          gtag('config', cfg.gaMeasurementId);
+        }
+      } catch (e) { console.warn('Tracking load error', e); }
+    })();
+  </script>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 

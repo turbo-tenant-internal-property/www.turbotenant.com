@@ -1,0 +1,19 @@
+{
+  "name": "rental-internal",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Internal tools for rental.turbotenant.com — webhook consumer, import scripts, and tests",
+  "scripts": {
+    "start:webhook": "node services/webhook/index.js",
+    "test:webhook": "node test/run_webhook_test.js",
+    "import:metadata": "node scripts/import_metadata.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "xlsx": "^0.18.6"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

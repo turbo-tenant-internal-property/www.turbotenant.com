@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TurboTenant Landlord Onboarding</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f6f8fb; margin: 0; padding: 0; }
+    .container { max-width: 420px; margin: 48px auto; background: #fff; padding: 40px 32px 32px 32px; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,32,82,0.07); }
+    h2 { color: #1857a2; margin-bottom: 12px; }
+    label { display: block; margin: 14px 0 4px 0; }
+    input, select { width: 100%; padding: 8px; margin-bottom: 10px; border-radius: 4px; border: 1px solid #dbe2ea; box-sizing: border-box; }
+    button { background: #1857a2; color: #fff; border: none; border-radius: 5px; padding: 12px 0; width: 100%; font-size: 1rem; cursor: pointer; }
+    button:disabled { background: #b2c9e8; }
+    .msg { margin: 12px 0; color: #e8293f; }
+    .logo { text-align: center; margin-bottom: 16px; }
+    .logo img { width: 120px; }
+  </style>
+  <!-- Firebase JS SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <!-- Google reCAPTCHA v2 -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><img src="https://www.turbotenant.com/wp-content/uploads/2022/07/tt-logo.svg" alt="TurboTenant Logo" /></div>
+    <h2>Landlord Onboarding</h2>
+    <form id="onboardingForm">
+      <label>Full Name <input name="fullName" required /></label>
+      <label>Email Address <input name="email" type="email" required /></label>
+      <label>Phone Number <input name="phone" type="tel" /></label>
+      <label>Password <input name="password" type="password" required /></label>
+      <label>Confirm Password <input name="confirmPassword" type="password" required /></label>
+      <label>Property Address <input name="propertyAddress" required /></label>
+      <label>City, State ZIP <input name="cityStateZip" required /></label>
+      <label>Type of Property
+        <select name="propertyType" required>
+          <option value="">Select property type</option>
+          <option value="Apartment">Apartment</option>
+          <option value="House">House</option>
+          <option value="Condo">Condo</option>
+        </select>
+      </label>
+      <label>Monthly Rent <input name="rent" type="number" min="0" required /></label>
+      <label>Available From Date <input name="availableDate" type="date" required /></label>
+      <div class="g-recaptcha" data-sitekey="YOUR_RECAPTCHA_SITE_KEY"></div>
+      <button id="submitBtn" type="submit">Create My Listing &amp; Continue</button>
+      <div class="msg" id="msg"></div>
+    </form>
+    <div style="margin-top:16px;font-size:0.95em;color:#888;">All data is securely handled. Powered by TurboTenant</div>
+    <div style="margin-top:8px;font-size:0.85em;color:#aaa;">Stripe Publishing Key: pk_test_51SHlNyCWEHfTx2OlHVuHL4IuUihJXspRWPXcfqbZulLqsoLKKx2N3aLw1EKLNqZ8sRGb8opn5ofcZc4diK5ADKfE00RCTtuGxv</div>
+  </div>
+  <script>
+    // Firebase Config — replace with your project values
+    const firebaseConfig = {
+      apiKey: "YOUR_FIREBASE_API_KEY",
+      authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
+      projectId: "YOUR_FIREBASE_PROJECT_ID",
+      appId: "YOUR_FIREBASE_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    // Helper: Secure backend call for listing creation
+    async function createListing(payload, idToken) {
+      // Replace '/api/create-listing' with your backend endpoint
+      // Backend must verify Firebase ID token and create listing in DB/HubSpot
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      try {
+        const res = await fetch('/api/create-listing', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(idToken ? { 'Authorization': 'Bearer ' + idToken } : {})
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.message || `Server error (${res.status})`);
+        }
+        return await res.json(); // expect { listingId: 'PRT-...' }
+      } catch (err) {
+        clearTimeout(timeout);
+        throw err;
+      }
+    }
+
+    // Form handler
+    document.getElementById('onboardingForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const msg = document.getElementById('msg');
+      msg.textContent = '';
+      const form = e.target;
+      if (form.password.value !== form.confirmPassword.value) {
+        msg.textContent = "Passwords do not match.";
+        return;
+      }
+      // reCAPTCHA check
+      if (typeof grecaptcha !== 'undefined') {
+        const recaptchaResponse = grecaptcha.getResponse();
+        if (!recaptchaResponse) {
+          msg.textContent = "Please complete the reCAPTCHA.";
+          return;
+        }
+      }
+      document.getElementById('submitBtn').disabled = true;
+      try {
+        // Create user in Firebase Auth
+        const cred = await firebase.auth().createUserWithEmailAndPassword(form.email.value, form.password.value);
+        // Enforce email verification before proceeding
+        if (!cred.user.emailVerified) {
+          await cred.user.sendEmailVerification();
+          msg.textContent = "Please verify your email address. Check your inbox and click the verification link before continuing.";
+          document.getElementById('submitBtn').disabled = false;
+          return;
+        }
+        // Get Firebase ID token for backend auth
+        const idToken = await cred.user.getIdToken();
+        // Build payload from form fields
+        const payload = {
+          ownerEmail: form.email.value,
+          ownerName: form.fullName.value,
+          phone: form.phone.value,
+          propertyAddress: form.propertyAddress.value,
+          cityStateZip: form.cityStateZip.value,
+          propertyType: form.propertyType.value,
+          rent: form.rent.value,
+          availableDate: form.availableDate.value
+        };
+        // Secure backend call
+        const result = await createListing(payload, idToken);
+        const listingId = result.listingId;
+        // Encode listingId safely
+        const encodedId = btoa(`Listing:${listingId}`);
+        window.location.replace(`https://rental.turbotenant.com/onboarding/property/setup/${encodedId}/amenities?disableBackOn=leasingBasics`);
+      } catch(err) {
+        msg.textContent = err.message;
+        document.getElementById('submitBtn').disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

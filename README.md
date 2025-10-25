@@ -78,3 +78,13 @@ For onboarding or verification assistance, contact:
 
 © 2025 VivaTurbo Rentals and Property Services.  
 All rights reserved.
+
+## Internal onboarding and ops
+
+This repository contains the landlord onboarding front-end and supporting guidance for VivaTurbo Rentals. Internal setup artifacts are under `docs/internal-onboarding/` and include:
+
+- `DOMAIN_EMAIL_SETUP.md` — DNS, MX, SPF/DKIM and HubSpot inbox routing steps for `rental.turbotenant.com`.
+- `PROPERTY_VERIFICATION.md` — API contract and webhook examples to enable property verification workflows for managers.
+- `ANALYTICS_TRACKING.md` — guidance for GTM, HubSpot, and GA4 insertion and consent considerations.
+
+If you're preparing to launch the VivaTurbo internal property onboarding milestone, follow the docs in that folder for DNS changes, email verification, and analytics activation. After DNS propagation and SSL issuance, confirm tracking scripts are present and run the verification smoke tests listed in `PROPERTY_VERIFICATION.md`.
